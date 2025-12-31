@@ -83,6 +83,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </Link>
             );
           })}
+
+          {/* Settings Link */}
+          <Link
+            href="/dashboard/settings"
+            className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors ${
+              pathname === '/dashboard/settings'
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-medium">Settings</span>
+          </Link>
         </nav>
 
         {/* User Info */}
@@ -108,6 +121,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             className="w-full"
             onClick={handleLogout}
           >
+            <LogOut className="w-4 h-4 mr-2" />
             Sign out
           </Button>
         </div>
