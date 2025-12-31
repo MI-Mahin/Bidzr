@@ -18,6 +18,7 @@ import { CricketIcon } from '@/components/icons/sports-icons';
 
 const registerPlayerSchema = z.object({
   auctionId: z.string().min(1, 'Please select an auction'),
+  auctionPassword: z.string().min(1, 'Auction password is required'),
   playerRole: z.string().min(1, 'Please select a role'),
   basePriceTier: z.string().min(1, 'Please select a base price'),
 });
@@ -84,8 +85,9 @@ export default function RegisterPlayerPage() {
   const onSubmit = async (data: RegisterPlayerForm) => {
     if (!accessToken || !selectedAuction) return;
 
-    const selectedTier = selectedAuction.basePriceTiers?.find(
-      (t: any) => t.tier === data.basePriceTier
+    const basePriceTiers = selectedAuction.sportConfig?.basePriceTiers || selectedAuction.basePriceTiers || [];
+    const selectedTier = basePriceTiers.find(
+      (t: any) => t.label === data.basePriceTier
     );
 
     setIsLoading(true);
@@ -93,7 +95,8 @@ export default function RegisterPlayerPage() {
       await api.registerPlayer(
         {
           playerRole: data.playerRole,
-          basePrice: selectedTier?.price || 200000,
+          basePrice: selectedTier?.amount || 200000,
+          password: data.auctionPassword,
         },
         data.auctionId,
         accessToken
@@ -148,9 +151,9 @@ export default function RegisterPlayerPage() {
               <p className="text-2xl font-bold">
                 {watchBasePriceTier && selectedAuction
                   ? formatCurrency(
-                      selectedAuction.basePriceTiers?.find(
-                        (t: any) => t.tier === watchBasePriceTier
-                      )?.price || 0
+                      (selectedAuction.sportConfig?.basePriceTiers || selectedAuction.basePriceTiers || [])?.find(
+                        (t: any) => t.label === watchBasePriceTier
+                      )?.amount || 0
                     )
                   : '₹--'}
               </p>
@@ -234,6 +237,30 @@ export default function RegisterPlayerPage() {
             </CardContent>
           </Card>
 
+          {/* Auction Password */}
+          {selectedAuction && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Auction Password</CardTitle>
+                <CardDescription>Enter the password provided by the auction organizer</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="auctionPassword">Password *</Label>
+                  <Input
+                    id="auctionPassword"
+                    type="password"
+                    placeholder="Enter auction password"
+                    {...register('auctionPassword')}
+                  />
+                  {errors.auctionPassword && (
+                    <p className="text-sm text-red-500">{errors.auctionPassword.message}</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Select Role */}
           {selectedAuction && (
             <Card>
@@ -288,18 +315,18 @@ export default function RegisterPlayerPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {selectedAuction.basePriceTiers?.map((tier: any, index: number) => (
+                  {(selectedAuction.sportConfig?.basePriceTiers || selectedAuction.basePriceTiers || [])?.map((tier: any, index: number) => (
                     <label
-                      key={tier.tier}
+                      key={tier.label}
                       className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer transition-all ${
-                        watchBasePriceTier === tier.tier
+                        watchBasePriceTier === tier.label
                           ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                           : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
                       }`}
                     >
                       <input
                         type="radio"
-                        value={tier.tier}
+                        value={tier.label}
                         {...register('basePriceTier')}
                         className="sr-only"
                       />
@@ -316,10 +343,10 @@ export default function RegisterPlayerPage() {
                             : 'bg-blue-100 text-blue-700'
                         }`}
                       >
-                        {tier.tier}
+                        {tier.label}
                       </span>
                       <span className="text-xl font-bold text-gray-900 dark:text-white">
-                        {formatCurrency(tier.price)}
+                        {formatCurrency(tier.amount)}
                       </span>
                     </label>
                   ))}

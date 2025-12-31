@@ -130,6 +130,24 @@ class SocketManager {
   }
 
   /**
+   * Admin: Start next player in auction
+   */
+  startNextPlayer(auctionId: string): void {
+    if (this.socket) {
+      this.socket.emit(SOCKET_EVENTS.ADMIN_PUT_ON_BLOCK, { auctionId });
+    }
+  }
+
+  /**
+   * Admin: End auction
+   */
+  endAuction(auctionId: string): void {
+    if (this.socket) {
+      this.socket.emit('auction:end', { auctionId });
+    }
+  }
+
+  /**
    * Subscribe to an event
    */
   on(event: string, callback: (...args: any[]) => void): void {

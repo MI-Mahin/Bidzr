@@ -122,9 +122,9 @@ class ApiClient {
 
   // Team endpoints
   async registerTeam(data: any, auctionId: string, token: string) {
-    return this.request(`/teams/auction/${auctionId}/register`, {
+    return this.request(`/teams/register`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, auctionId }),
       token,
     });
   }
@@ -147,9 +147,9 @@ class ApiClient {
 
   // Player endpoints
   async registerPlayer(data: any, auctionId: string, token: string) {
-    return this.request(`/players/auction/${auctionId}/register`, {
+    return this.request(`/players/register`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, auctionId }),
       token,
     });
   }

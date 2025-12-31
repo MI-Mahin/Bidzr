@@ -121,7 +121,7 @@ export default function AuctionRoomPage() {
     socketManager.connect(accessToken);
     
     // Join auction room
-    socketManager.joinAuction(auctionId);
+    socketManager.joinAuction(auctionId, '');
 
     // Socket event handlers
     const handleConnect = () => {
@@ -241,7 +241,7 @@ export default function AuctionRoomPage() {
         socket.off('auction:ended', handleAuctionEnded);
         socket.off('error', handleError);
       }
-      socketManager.leaveAuction(auctionId);
+      socketManager.leaveAuction();
       reset();
     };
   }, [accessToken, auctionId, router, toast, reset, setConnected, setCurrentBid, setCurrentPlayer, setTimer]);
@@ -252,7 +252,8 @@ export default function AuctionRoomPage() {
 
     setIsBidding(true);
     try {
-      socketManager.placeBid(auctionId, myTeam._id, nextBidAmount);
+      const playerId = (currentPlayer as any)?._id || (currentPlayer as any)?.id;
+      socketManager.placeBid(playerId, nextBidAmount);
     } catch (error) {
       toast({
         variant: 'destructive',

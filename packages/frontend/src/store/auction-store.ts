@@ -76,6 +76,10 @@ interface AuctionState {
   
   // Timer
   timeRemaining: number;
+  timer: number;
+  
+  // Current bid amount
+  currentBid: number;
   
   // Recent activity
   recentBids: BidUpdate[];
@@ -96,6 +100,8 @@ interface AuctionState {
   playerSold: (sale: PlayerSold) => void;
   playerUnsold: (playerId: string, playerName: string) => void;
   updateTeam: (teamId: string, updates: Partial<Team>) => void;
+  setCurrentBid: (bid: number) => void;
+  setTimer: (time: number) => void;
   reset: () => void;
 }
 
@@ -107,6 +113,8 @@ const initialState = {
   teams: [],
   stats: { pending: 0, sold: 0, unsold: 0 },
   timeRemaining: 0,
+  timer: 0,
+  currentBid: 0,
   recentBids: [],
   recentSales: [],
 };
@@ -193,6 +201,10 @@ export const useAuctionStore = create<AuctionState>((set, get) => ({
         team.id === teamId ? { ...team, ...updates } : team
       ),
     })),
+
+  setCurrentBid: (currentBid) => set({ currentBid }),
+
+  setTimer: (timer) => set({ timer, timeRemaining: timer }),
 
   reset: () => set(initialState),
 }));

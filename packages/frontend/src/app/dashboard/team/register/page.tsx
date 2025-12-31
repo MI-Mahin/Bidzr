@@ -82,7 +82,7 @@ export default function RegisterTeamPage() {
         {
           name: data.name,
           shortName: data.shortName,
-          auctionPassword: data.auctionPassword,
+          password: data.auctionPassword,
         },
         data.auctionId,
         accessToken

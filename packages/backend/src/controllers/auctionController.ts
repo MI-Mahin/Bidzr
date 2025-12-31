@@ -13,6 +13,7 @@ import {
   ConflictError,
 } from '../middleware/errorHandler';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 
 /**
  * Create a new auction
@@ -118,10 +119,35 @@ export const getAuctions = async (
       Auction.countDocuments(query),
     ]);
 
+    // Fetch team and player counts for each auction
+    const auctionIds = auctions.map(a => a._id);
+    
+    const [teamCounts, playerCounts] = await Promise.all([
+      Team.aggregate([
+        { $match: { auction: { $in: auctionIds }, isActive: true } },
+        { $group: { _id: '$auction', count: { $sum: 1 } } }
+      ]),
+      PlayerRegistration.aggregate([
+        { $match: { auction: { $in: auctionIds } } },
+        { $group: { _id: '$auction', count: { $sum: 1 } } }
+      ])
+    ]);
+
+    const teamCountMap = new Map(teamCounts.map(t => [t._id.toString(), t.count]));
+    const playerCountMap = new Map(playerCounts.map(p => [p._id.toString(), p.count]));
+
+    // Add counts to auction objects
+    const auctionsWithCounts = auctions.map(auction => {
+      const auctionObj = auction.toJSON() as any;
+      auctionObj.registeredTeams = Array(teamCountMap.get(auction._id.toString()) || 0).fill(null);
+      auctionObj.registeredPlayers = Array(playerCountMap.get(auction._id.toString()) || 0).fill(null);
+      return auctionObj;
+    });
+
     res.json({
       success: true,
       data: {
-        auctions,
+        auctions: auctionsWithCounts,
         pagination: {
           page: Number(page),
           limit: Number(limit),

@@ -6,6 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number, currency: string = 'INR'): string {
+  // Handle undefined/null/NaN values
+  if (amount === undefined || amount === null || isNaN(amount)) {
+    return currency === 'INR' ? '₹0' : '$0';
+  }
+  
   if (currency === 'INR') {
     // Format in Indian numbering system (lakhs, crores)
     if (amount >= 10000000) {
