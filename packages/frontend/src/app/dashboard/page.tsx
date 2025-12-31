@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, getAuctionStatusColor } from '@/lib/utils';
+import { Radio, Calendar, Trophy, ClipboardList, BarChart3, Plus, FileText, PenLine, Gavel } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 export default function DashboardPage() {
   const { user, accessToken } = useAuthStore();
@@ -72,7 +74,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Welcome back, {user?.name?.split(' ')[0]}! 👋
+          Welcome back, {user?.name?.split(' ')[0]}!
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">
           Here&apos;s what&apos;s happening with your auctions today.
@@ -84,14 +86,14 @@ export default function DashboardPage() {
         <StatCard
           title="Live Auctions"
           value={stats.liveAuctions}
-          icon="🔴"
+          icon={<Radio className="w-6 h-6" />}
           description="Currently active"
           color="red"
         />
         <StatCard
           title="Upcoming Auctions"
           value={stats.upcomingAuctions}
-          icon="📅"
+          icon={<Calendar className="w-6 h-6" />}
           description="Scheduled soon"
           color="blue"
         />
@@ -99,7 +101,7 @@ export default function DashboardPage() {
           <StatCard
             title="My Teams"
             value={stats.myTeams}
-            icon="🏆"
+            icon={<Trophy className="w-6 h-6" />}
             description="Registered teams"
             color="amber"
           />
@@ -108,7 +110,7 @@ export default function DashboardPage() {
           <StatCard
             title="My Registrations"
             value={stats.myRegistrations}
-            icon="📋"
+            icon={<ClipboardList className="w-6 h-6" />}
             description="Auction registrations"
             color="purple"
           />
@@ -117,7 +119,7 @@ export default function DashboardPage() {
           <StatCard
             title="Total Auctions"
             value={stats.upcomingAuctions + stats.liveAuctions}
-            icon="📊"
+            icon={<BarChart3 className="w-6 h-6" />}
             description="Created by you"
             color="green"
           />
@@ -135,26 +137,26 @@ export default function DashboardPage() {
             {user?.role === 'admin' && (
               <Link href="/dashboard/admin/create-auction">
                 <Button className="gradient-cricket text-white">
-                  ➕ Create New Auction
+                  <Plus className="w-4 h-4 mr-2" /> Create New Auction
                 </Button>
               </Link>
             )}
             {user?.role === 'team_owner' && (
               <Link href="/dashboard/team/register">
                 <Button className="gradient-cricket text-white">
-                  📝 Register for Auction
+                  <FileText className="w-4 h-4 mr-2" /> Register for Auction
                 </Button>
               </Link>
             )}
             {user?.role === 'player' && (
               <Link href="/dashboard/player/register">
                 <Button className="gradient-cricket text-white">
-                  ✍️ Join an Auction
+                  <PenLine className="w-4 h-4 mr-2" /> Join an Auction
                 </Button>
               </Link>
             )}
             <Link href="/auctions">
-              <Button variant="outline">🏏 Browse Auctions</Button>
+              <Button variant="outline"><Gavel className="w-4 h-4 mr-2" /> Browse Auctions</Button>
             </Link>
           </div>
         </CardContent>
@@ -175,8 +177,8 @@ export default function DashboardPage() {
                   className="flex items-center justify-between p-4 rounded-lg border bg-gray-50 dark:bg-gray-800"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <span>🏏</span>
+                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                      <CricketIcon className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900 dark:text-white">
@@ -222,7 +224,7 @@ function StatCard({
 }: {
   title: string;
   value: number;
-  icon: string;
+  icon: React.ReactNode;
   description: string;
   color: string;
 }) {
@@ -248,7 +250,7 @@ function StatCard({
             <p className="text-xs text-gray-500 mt-1">{description}</p>
           </div>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${colorClasses[color]}`}
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${colorClasses[color]}`}
           >
             {icon}
           </div>

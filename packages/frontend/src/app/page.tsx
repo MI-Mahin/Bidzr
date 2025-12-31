@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Zap, Target, BarChart3, Crown, Trophy, Star } from 'lucide-react';
+import { CricketIcon, FootballIcon, BasketballIcon, KabaddiIcon } from '@/components/icons/sports-icons';
 
 export default function HomePage() {
   return (
@@ -8,7 +10,7 @@ export default function HomePage() {
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">🏏</span>
+            <CricketIcon className="w-7 h-7 text-green-600" />
             <span className="text-2xl font-bold text-green-700 dark:text-green-400">
               Bidzr
             </span>
@@ -52,17 +54,17 @@ export default function HomePage() {
         {/* Features */}
         <div className="mt-24 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <FeatureCard
-            icon="⚡"
+            icon={<Zap className="w-10 h-10 text-yellow-500" />}
             title="Real-time Bidding"
             description="Live bidding with instant updates. Every bid is broadcast to all participants in real-time."
           />
           <FeatureCard
-            icon="🎯"
+            icon={<Target className="w-10 h-10 text-red-500" />}
             title="Smart Timer"
             description="30-second countdown resets on each bid. No more waiting - action-packed auctions."
           />
           <FeatureCard
-            icon="📊"
+            icon={<BarChart3 className="w-10 h-10 text-blue-500" />}
             title="Budget Tracking"
             description="Automatic budget management for teams. Track spending and remaining purse instantly."
           />
@@ -74,10 +76,10 @@ export default function HomePage() {
             Multiple Sports Supported
           </h2>
           <div className="flex flex-wrap justify-center gap-6">
-            <SportBadge emoji="🏏" name="Cricket" active />
-            <SportBadge emoji="⚽" name="Football" />
-            <SportBadge emoji="🏀" name="Basketball" />
-            <SportBadge emoji="🤼" name="Kabaddi" />
+            <SportBadge icon={<CricketIcon className="w-5 h-5" />} name="Cricket" active />
+            <SportBadge icon={<FootballIcon className="w-5 h-5" />} name="Football" />
+            <SportBadge icon={<BasketballIcon className="w-5 h-5" />} name="Basketball" />
+            <SportBadge icon={<KabaddiIcon className="w-5 h-5" />} name="Kabaddi" />
           </div>
         </div>
 
@@ -90,17 +92,17 @@ export default function HomePage() {
             <RoleCard
               title="Admin"
               description="Create auctions, set budgets, define player roles and base prices. Full control over the auction flow."
-              icon="👑"
+              icon={<Crown className="w-8 h-8 text-yellow-500" />}
             />
             <RoleCard
               title="Team Owner"
               description="Register your team, participate in real-time bidding, and build your dream squad within budget."
-              icon="🏆"
+              icon={<Trophy className="w-8 h-8 text-amber-500" />}
             />
             <RoleCard
               title="Player"
               description="Register for auctions, choose your role and base price. Get picked by the best teams."
-              icon="⭐"
+              icon={<Star className="w-8 h-8 text-purple-500" />}
             />
           </div>
         </div>
@@ -132,13 +134,13 @@ function FeatureCard({
   title,
   description,
 }: {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-      <div className="text-4xl mb-4">{icon}</div>
+      <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
         {title}
       </h3>
@@ -148,11 +150,11 @@ function FeatureCard({
 }
 
 function SportBadge({
-  emoji,
+  icon,
   name,
   active = false,
 }: {
-  emoji: string;
+  icon: React.ReactNode;
   name: string;
   active?: boolean;
 }) {
@@ -164,7 +166,7 @@ function SportBadge({
           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
       }`}
     >
-      <span className="text-xl">{emoji}</span>
+      {icon}
       <span className="font-medium">{name}</span>
       {active && (
         <span className="text-xs bg-green-600 text-white px-2 py-0.5 rounded-full">
@@ -182,11 +184,11 @@ function RoleCard({
 }: {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border-t-4 border-green-500">
-      <div className="text-3xl mb-3">{icon}</div>
+      <div className="mb-3">{icon}</div>
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
         {title}
       </h3>

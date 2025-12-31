@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { Calendar, Target, Zap, Shield, Loader2 } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 const registerPlayerSchema = z.object({
   auctionId: z.string().min(1, 'Please select an auction'),
@@ -22,11 +24,11 @@ const registerPlayerSchema = z.object({
 
 type RegisterPlayerForm = z.infer<typeof registerPlayerSchema>;
 
-const cricketRoles = [
-  { id: 'batsman', name: 'Batsman', icon: '🏏', description: 'Primary run scorer' },
-  { id: 'bowler', name: 'Bowler', icon: '🎯', description: 'Primary wicket taker' },
-  { id: 'all-rounder', name: 'All-rounder', icon: '⚡', description: 'Batting + Bowling' },
-  { id: 'wicket-keeper', name: 'Wicket Keeper', icon: '🧤', description: 'Keeper + Batsman' },
+const cricketRoles: { id: string; name: string; icon: ReactNode; description: string }[] = [
+  { id: 'batsman', name: 'Batsman', icon: <CricketIcon className="w-8 h-8" />, description: 'Primary run scorer' },
+  { id: 'bowler', name: 'Bowler', icon: <Target className="w-8 h-8" />, description: 'Primary wicket taker' },
+  { id: 'all-rounder', name: 'All-rounder', icon: <Zap className="w-8 h-8" />, description: 'Batting + Bowling' },
+  { id: 'wicket-keeper', name: 'Wicket Keeper', icon: <Shield className="w-8 h-8" />, description: 'Keeper + Batsman' },
 ];
 
 export default function RegisterPlayerPage() {
@@ -98,7 +100,7 @@ export default function RegisterPlayerPage() {
       );
 
       toast({
-        title: 'Registration Submitted! 🎉',
+        title: 'Registration Submitted!',
         description: 'Your registration is pending approval.',
       });
 
@@ -131,8 +133,8 @@ export default function RegisterPlayerPage() {
         <CardContent className="py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl">
-                {cricketRoles.find((r) => r.id === watchPlayerRole)?.icon || '🏏'}
+              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+                {cricketRoles.find((r) => r.id === watchPlayerRole)?.icon || <CricketIcon className="w-8 h-8" />}
               </div>
               <div>
                 <h2 className="text-xl font-bold">{user?.name}</h2>
@@ -165,7 +167,9 @@ export default function RegisterPlayerPage() {
         <Card>
           <CardContent className="py-12">
             <div className="text-center">
-              <div className="text-6xl mb-4">📅</div>
+              <div className="mb-4 flex justify-center">
+                <Calendar className="w-16 h-16 text-gray-400" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No Upcoming Auctions
               </h3>
@@ -204,15 +208,15 @@ export default function RegisterPlayerPage() {
                       className="sr-only"
                     />
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                        <span className="text-2xl">🏏</span>
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
+                        <CricketIcon className="w-6 h-6" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">
                           {auction.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
-                          📅 {formatDate(auction.scheduledDate)}
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                          <Calendar className="w-4 h-4" /> {formatDate(auction.scheduledDate)}
                         </p>
                       </div>
                     </div>
@@ -255,7 +259,7 @@ export default function RegisterPlayerPage() {
                         className="sr-only"
                       />
                       <div className="flex items-center space-x-3">
-                        <span className="text-3xl">{role.icon}</span>
+                        <span className="text-green-600">{role.icon}</span>
                         <div>
                           <h4 className="font-medium text-gray-900 dark:text-white">
                             {role.name}
@@ -343,11 +347,14 @@ export default function RegisterPlayerPage() {
             >
               {isLoading ? (
                 <>
-                  <span className="animate-spin mr-2">⏳</span>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Submitting...
                 </>
               ) : (
-                <>🏏 Submit Registration</>
+                <>
+                  <CricketIcon className="w-4 h-4 mr-2" />
+                  Submit Registration
+                </>
               )}
             </Button>
           </div>

@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, formatDate, getAuctionStatusColor, getRelativeTime } from '@/lib/utils';
+import { Gavel, ArrowLeft, Radio, Users, UserRound } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 export default function AuctionsPage() {
   const { accessToken, user } = useAuthStore();
@@ -68,8 +70,8 @@ export default function AuctionsPage() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                🏏 Auctions
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Gavel className="w-8 h-8 text-green-600" /> Auctions
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
                 Browse and join sports auctions
@@ -125,7 +127,7 @@ export default function AuctionsPage() {
             <CardContent className="py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <span className="text-2xl animate-pulse">🔴</span>
+                  <Radio className="w-6 h-6 text-red-600 animate-pulse" />
                   <div>
                     <h3 className="font-semibold text-red-700 dark:text-red-400">
                       Live Auctions Happening Now!
@@ -157,8 +159,8 @@ export default function AuctionsPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                        <span className="text-2xl">🏏</span>
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
+                        <CricketIcon className="w-6 h-6" />
                       </div>
                       <div>
                         <CardTitle className="text-lg">{auction.name}</CardTitle>
@@ -191,8 +193,8 @@ export default function AuctionsPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <span>👥 {auction.registeredTeams?.length || 0}/{auction.maxTeams} teams</span>
-                    <span>🏃 {auction.registeredPlayers?.length || 0} players</span>
+                    <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {auction.registeredTeams?.length || 0}/{auction.maxTeams} teams</span>
+                    <span className="flex items-center gap-1"><UserRound className="w-4 h-4" /> {auction.registeredPlayers?.length || 0} players</span>
                   </div>
 
                   {auction.status === 'upcoming' && (
@@ -210,7 +212,7 @@ export default function AuctionsPage() {
                     {auction.status === 'live' && user?.role === 'team_owner' && (
                       <Link href={`/auction/${auction._id}`} className="flex-1">
                         <Button className="w-full bg-red-600 hover:bg-red-700 text-white" size="sm">
-                          🔴 Join Live
+                          <Radio className="w-4 h-4 mr-1 animate-pulse" /> Join Live
                         </Button>
                       </Link>
                     )}
@@ -221,7 +223,9 @@ export default function AuctionsPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4">🏏</div>
+            <div className="mb-4 flex justify-center">
+              <CricketIcon className="w-16 h-16 text-gray-300" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               No auctions found
             </h3>

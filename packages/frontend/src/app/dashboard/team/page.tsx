@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, formatDate, getAuctionStatusColor } from '@/lib/utils';
+import { Trophy, Users, Wallet, Radio, FileText } from 'lucide-react';
 
 export default function TeamDashboardPage() {
   const { accessToken } = useAuthStore();
@@ -62,7 +63,7 @@ export default function TeamDashboardPage() {
         </div>
         <Link href="/dashboard/team/register">
           <Button className="gradient-cricket text-white">
-            📝 Register for Auction
+            <FileText className="w-4 h-4 mr-2" /> Register for Auction
           </Button>
         </Link>
       </div>
@@ -72,26 +73,26 @@ export default function TeamDashboardPage() {
         <StatCard
           title="My Teams"
           value={teams.length}
-          icon="🏆"
+          icon={<Trophy className="w-6 h-6" />}
           color="bg-amber-100 text-amber-600"
         />
         <StatCard
           title="Total Players"
           value={totalPlayers}
-          icon="👥"
+          icon={<Users className="w-6 h-6" />}
           color="bg-blue-100 text-blue-600"
         />
         <StatCard
           title="Total Spent"
           value={`₹${(totalSpent / 10000000).toFixed(2)} Cr`}
-          icon="💰"
+          icon={<Wallet className="w-6 h-6" />}
           color="bg-green-100 text-green-600"
           isText
         />
         <StatCard
           title="Live Auctions"
           value={liveAuctions.length}
-          icon="🔴"
+          icon={<Radio className="w-6 h-6" />}
           color="bg-red-100 text-red-600"
         />
       </div>
@@ -102,7 +103,7 @@ export default function TeamDashboardPage() {
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl animate-pulse">🔴</span>
+                <Radio className="w-6 h-6 text-red-600 animate-pulse" />
                 <div>
                   <h3 className="font-semibold text-red-700 dark:text-red-400">
                     Live Auctions Available!
@@ -199,7 +200,9 @@ export default function TeamDashboardPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🏆</div>
+              <div className="mb-4 flex justify-center">
+                <Trophy className="w-16 h-16 text-gray-300" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No teams yet
               </h3>
@@ -228,7 +231,7 @@ function StatCard({
 }: {
   title: string;
   value: number | string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   isText?: boolean;
 }) {
@@ -245,7 +248,7 @@ function StatCard({
             </p>
           </div>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${color}`}
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${color}`}
           >
             {icon}
           </div>

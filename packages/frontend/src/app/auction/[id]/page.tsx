@@ -10,6 +10,8 @@ import { useAuctionStore } from '@/store/auction-store';
 import { socketManager } from '@/lib/socket';
 import api from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
+import { Gavel, Play, StopCircle, Target, Zap, Shield } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 interface Team {
   _id: string;
@@ -144,7 +146,7 @@ export default function AuctionRoomPage() {
       setCurrentBid(data.basePrice);
       setBidHistory([]);
       toast({
-        title: '🏏 New Player',
+        title: 'New Player',
         description: `${data.player.player?.name} is now up for bidding!`,
       });
     };
@@ -168,7 +170,7 @@ export default function AuctionRoomPage() {
 
     const handlePlayerSold = (data: { player: any; team: any; amount: number }) => {
       toast({
-        title: '🎉 SOLD!',
+        title: 'SOLD!',
         description: `${data.player.player?.name} sold to ${data.team?.name} for ${formatCurrency(data.amount)}`,
       });
       setCurrentPlayer(null);
@@ -289,7 +291,7 @@ export default function AuctionRoomPage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <span className="text-3xl">🏏</span>
+              <CricketIcon className="w-8 h-8 text-green-600" />
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   {auction?.name || 'Auction Room'}
@@ -353,11 +355,9 @@ export default function AuctionRoomPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-6">
                       <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center">
-                        <span className="text-5xl">
-                          {(currentPlayer as any).playerRole === 'batsman' ? '🏏' :
-                           (currentPlayer as any).playerRole === 'bowler' ? '🎯' :
-                           (currentPlayer as any).playerRole === 'wicket-keeper' ? '🧤' : '⚡'}
-                        </span>
+                        {(currentPlayer as any).playerRole === 'batsman' ? <CricketIcon className="w-12 h-12" /> :
+                         (currentPlayer as any).playerRole === 'bowler' ? <Target className="w-12 h-12" /> :
+                         (currentPlayer as any).playerRole === 'wicket-keeper' ? <Shield className="w-12 h-12" /> : <Zap className="w-12 h-12" />}
                       </div>
                       <div>
                         <h2 className="text-3xl font-bold">
@@ -387,7 +387,9 @@ export default function AuctionRoomPage() {
               <Card>
                 <CardContent className="py-16">
                   <div className="text-center">
-                    <div className="text-6xl mb-4">🏏</div>
+                    <div className="mb-4 flex justify-center">
+                      <CricketIcon className="w-16 h-16 text-gray-300" />
+                    </div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                       Waiting for next player...
                     </h2>
@@ -424,7 +426,7 @@ export default function AuctionRoomPage() {
                       {isBidding ? (
                         <span className="animate-pulse">Bidding...</span>
                       ) : (
-                        <>🔨 PLACE BID</>
+                        <><Gavel className="w-5 h-5 mr-2" /> PLACE BID</>
                       )}
                     </Button>
                   </div>
@@ -449,13 +451,13 @@ export default function AuctionRoomPage() {
                       onClick={handleStartNextPlayer}
                       className="gradient-cricket text-white"
                     >
-                      ▶️ Start Next Player
+                      <Play className="w-4 h-4 mr-2" /> Start Next Player
                     </Button>
                     <Button
                       onClick={handleEndAuction}
                       variant="destructive"
                     >
-                      🛑 End Auction
+                      <StopCircle className="w-4 h-4 mr-2" /> End Auction
                     </Button>
                   </div>
                 </CardContent>

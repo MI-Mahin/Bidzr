@@ -5,6 +5,18 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/auth-store';
 import { Button } from '@/components/ui/button';
+import { 
+  LayoutDashboard, 
+  Gavel, 
+  Plus, 
+  Settings, 
+  Trophy, 
+  FileText, 
+  ClipboardList,
+  PenLine,
+  LogOut
+} from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -46,7 +58,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
         {/* Logo */}
         <div className="flex items-center space-x-2 px-6 py-4 border-b">
-          <span className="text-2xl">🏏</span>
+          <CricketIcon className="w-7 h-7 text-green-600" />
           <span className="text-xl font-bold text-green-700 dark:text-green-400">
             Bidzr
           </span>
@@ -66,7 +78,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
-                <span className="text-lg">{item.icon}</span>
+                <span className="w-5 h-5">{item.icon}</span>
                 <span className="font-medium">{item.label}</span>
               </Link>
             );
@@ -111,25 +123,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
 function getNavItems(role: string) {
   const commonItems = [
-    { href: '/dashboard', label: 'Overview', icon: '📊' },
-    { href: '/auctions', label: 'Auctions', icon: '🏏' },
+    { href: '/dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { href: '/auctions', label: 'Auctions', icon: <Gavel className="w-5 h-5" /> },
   ];
 
-  const roleItems: Record<string, Array<{ href: string; label: string; icon: string }>> = {
+  const roleItems: Record<string, Array<{ href: string; label: string; icon: React.ReactNode }>> = {
     admin: [
       ...commonItems,
-      { href: '/dashboard/admin/create-auction', label: 'Create Auction', icon: '➕' },
-      { href: '/dashboard/admin/manage', label: 'Manage Auctions', icon: '⚙️' },
+      { href: '/dashboard/admin/create-auction', label: 'Create Auction', icon: <Plus className="w-5 h-5" /> },
+      { href: '/dashboard/admin/manage', label: 'Manage Auctions', icon: <Settings className="w-5 h-5" /> },
     ],
     team_owner: [
       ...commonItems,
-      { href: '/dashboard/team/my-teams', label: 'My Teams', icon: '🏆' },
-      { href: '/dashboard/team/register', label: 'Register Team', icon: '📝' },
+      { href: '/dashboard/team/my-teams', label: 'My Teams', icon: <Trophy className="w-5 h-5" /> },
+      { href: '/dashboard/team/register', label: 'Register Team', icon: <FileText className="w-5 h-5" /> },
     ],
     player: [
       ...commonItems,
-      { href: '/dashboard/player/registrations', label: 'My Registrations', icon: '📋' },
-      { href: '/dashboard/player/register', label: 'Register for Auction', icon: '✍️' },
+      { href: '/dashboard/player/registrations', label: 'My Registrations', icon: <ClipboardList className="w-5 h-5" /> },
+      { href: '/dashboard/player/register', label: 'Register for Auction', icon: <PenLine className="w-5 h-5" /> },
     ],
   };
 

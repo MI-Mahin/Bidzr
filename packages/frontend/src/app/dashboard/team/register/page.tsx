@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { Calendar, Wallet, Trophy, Loader2 } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 const registerTeamSchema = z.object({
   auctionId: z.string().min(1, 'Please select an auction'),
@@ -87,7 +89,7 @@ export default function RegisterTeamPage() {
       );
 
       toast({
-        title: 'Team Registered! 🎉',
+        title: 'Team Registered!',
         description: 'Your team has been registered for the auction.',
       });
 
@@ -123,7 +125,9 @@ export default function RegisterTeamPage() {
         <Card>
           <CardContent className="py-12">
             <div className="text-center">
-              <div className="text-6xl mb-4">📅</div>
+              <div className="mb-4 flex justify-center">
+                <Calendar className="w-16 h-16 text-gray-300" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No Upcoming Auctions
               </h3>
@@ -163,15 +167,15 @@ export default function RegisterTeamPage() {
                       className="sr-only"
                     />
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                        <span className="text-2xl">🏏</span>
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
+                        <CricketIcon className="w-6 h-6" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">
                           {auction.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
-                          📅 {formatDate(auction.scheduledDate)} • 💰{' '}
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5" /> {formatDate(auction.scheduledDate)} • <Wallet className="w-3.5 h-3.5" />{' '}
                           {formatCurrency(auction.teamBudget)} budget
                         </p>
                       </div>
@@ -294,11 +298,11 @@ export default function RegisterTeamPage() {
             >
               {isLoading ? (
                 <>
-                  <span className="animate-spin mr-2">⏳</span>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Registering...
                 </>
               ) : (
-                <>🏆 Register Team</>
+                <><Trophy className="w-4 h-4 mr-2" /> Register Team</>
               )}
             </Button>
           </div>

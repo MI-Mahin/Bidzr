@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/auth-store';
+import { CricketIcon } from '@/components/icons/sports-icons';
 import api from '@/lib/api';
 
 const loginSchema = z.object({
@@ -75,7 +76,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-3xl">🏏</span>
+            <CricketIcon className="w-8 h-8 text-green-600" />
             <span className="text-2xl font-bold text-green-700 dark:text-green-400">
               Bidzr
             </span>

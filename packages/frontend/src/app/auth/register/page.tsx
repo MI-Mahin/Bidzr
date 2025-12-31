@@ -12,6 +12,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/auth-store';
+import { Crown, Trophy, Star } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 import api from '@/lib/api';
 
 const registerSchema = z.object({
@@ -87,9 +89,9 @@ export default function RegisterPage() {
   };
 
   const roleOptions = [
-    { value: 'player', label: 'Player', icon: '⭐', description: 'Register for auctions' },
-    { value: 'team_owner', label: 'Team Owner', icon: '🏆', description: 'Bid for players' },
-    { value: 'admin', label: 'Admin', icon: '👑', description: 'Create & manage auctions' },
+    { value: 'player', label: 'Player', icon: <Star className="w-5 h-5" />, description: 'Register for auctions' },
+    { value: 'team_owner', label: 'Team Owner', icon: <Trophy className="w-5 h-5" />, description: 'Bid for players' },
+    { value: 'admin', label: 'Admin', icon: <Crown className="w-5 h-5" />, description: 'Create & manage auctions' },
   ];
 
   return (
@@ -97,7 +99,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-lg">
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-3xl">🏏</span>
+            <CricketIcon className="w-8 h-8 text-green-600" />
             <span className="text-2xl font-bold text-green-700 dark:text-green-400">
               Bidzr
             </span>

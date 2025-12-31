@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/auth-store';
+import { Loader2, Plus } from 'lucide-react';
+import { CricketIcon, FootballIcon, BasketballIcon, KabaddiIcon, getSportIcon } from '@/components/icons/sports-icons';
 import api from '@/lib/api';
 
 const createAuctionSchema = z.object({
@@ -70,11 +72,11 @@ export default function CreateAuctionPage() {
 
   const sportType = watch('sportType');
 
-  const sportConfig = {
-    cricket: { icon: '🏏', name: 'Cricket', playerRoles: ['Batsman', 'Bowler', 'All-rounder', 'Wicket-keeper'] },
-    football: { icon: '⚽', name: 'Football', playerRoles: ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'] },
-    basketball: { icon: '🏀', name: 'Basketball', playerRoles: ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'] },
-    kabaddi: { icon: '🤼', name: 'Kabaddi', playerRoles: ['Raider', 'Defender', 'All-rounder'] },
+  const sportConfig: Record<string, { icon: React.ReactNode; name: string; playerRoles: string[] }> = {
+    cricket: { icon: <CricketIcon className="w-6 h-6" />, name: 'Cricket', playerRoles: ['Batsman', 'Bowler', 'All-rounder', 'Wicket-keeper'] },
+    football: { icon: <FootballIcon className="w-6 h-6" />, name: 'Football', playerRoles: ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'] },
+    basketball: { icon: <BasketballIcon className="w-6 h-6" />, name: 'Basketball', playerRoles: ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'] },
+    kabaddi: { icon: <KabaddiIcon className="w-6 h-6" />, name: 'Kabaddi', playerRoles: ['Raider', 'Defender', 'All-rounder'] },
   };
 
   const updateTierPrice = (index: number, price: number) => {
@@ -111,7 +113,7 @@ export default function CreateAuctionPage() {
       await api.createAuction(auctionData, accessToken);
 
       toast({
-        title: 'Auction Created! 🎉',
+        title: 'Auction Created!',
         description: 'Your auction has been created successfully.',
       });
 
@@ -345,11 +347,11 @@ export default function CreateAuctionPage() {
           >
             {isLoading ? (
               <>
-                <span className="animate-spin mr-2">⏳</span>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Creating...
               </>
             ) : (
-              <>🏏 Create Auction</>
+              <><Plus className="w-4 h-4 mr-2" /> Create Auction</>
             )}
           </Button>
         </div>

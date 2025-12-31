@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import api from '@/lib/api';
 import { formatCurrency, getAuctionStatusColor } from '@/lib/utils';
+import { ClipboardList, Clock, CheckCircle2, Wallet, PenLine, Target } from 'lucide-react';
+import { CricketIcon } from '@/components/icons/sports-icons';
 
 export default function PlayerDashboardPage() {
   const { accessToken, user } = useAuthStore();
@@ -56,7 +58,7 @@ export default function PlayerDashboardPage() {
         </div>
         <Link href="/dashboard/player/register">
           <Button className="gradient-cricket text-white">
-            ✍️ Register for Auction
+            <PenLine className="w-4 h-4 mr-2" /> Register for Auction
           </Button>
         </Link>
       </div>
@@ -66,25 +68,25 @@ export default function PlayerDashboardPage() {
         <StatCard
           title="Total Registrations"
           value={registrations.length}
-          icon="📋"
+          icon={<ClipboardList className="w-6 h-6" />}
           color="bg-blue-100 text-blue-600"
         />
         <StatCard
           title="Pending"
           value={pendingRegistrations.length}
-          icon="⏳"
+          icon={<Clock className="w-6 h-6" />}
           color="bg-amber-100 text-amber-600"
         />
         <StatCard
           title="Sold"
           value={soldRegistrations.length}
-          icon="✅"
+          icon={<CheckCircle2 className="w-6 h-6" />}
           color="bg-green-100 text-green-600"
         />
         <StatCard
           title="Total Value"
           value={`₹${(totalEarnings / 100000).toFixed(1)} L`}
-          icon="💰"
+          icon={<Wallet className="w-6 h-6" />}
           color="bg-purple-100 text-purple-600"
           isText
         />
@@ -94,8 +96,8 @@ export default function PlayerDashboardPage() {
       <Card className="gradient-cricket text-white">
         <CardContent className="py-6">
           <div className="flex items-center space-x-6">
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-4xl">
-              🏏
+            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+              <CricketIcon className="w-10 h-10" />
             </div>
             <div>
               <h2 className="text-2xl font-bold">{user?.name}</h2>
@@ -105,8 +107,8 @@ export default function PlayerDashboardPage() {
                   Cricket Player
                 </span>
                 {soldRegistrations.length > 0 && (
-                  <span className="px-3 py-1 bg-green-500 rounded-full text-sm">
-                    ✅ Sold in {soldRegistrations.length} auction(s)
+                  <span className="px-3 py-1 bg-green-500 rounded-full text-sm flex items-center gap-1">
+                    <CheckCircle2 className="w-4 h-4" /> Sold in {soldRegistrations.length} auction(s)
                   </span>
                 )}
               </div>
@@ -130,16 +132,16 @@ export default function PlayerDashboardPage() {
                   className="flex items-center justify-between p-4 rounded-lg border bg-gray-50 dark:bg-gray-800"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                      <span className="text-2xl">🏏</span>
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
+                      <CricketIcon className="w-6 h-6" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 dark:text-white">
                         {registration.auction?.name || 'Unknown Auction'}
                       </h3>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>🎯 {registration.playerRole}</span>
-                        <span>💰 Base: {formatCurrency(registration.basePrice)}</span>
+                        <span className="flex items-center gap-1"><Target className="w-3.5 h-3.5" /> {registration.playerRole}</span>
+                        <span className="flex items-center gap-1"><Wallet className="w-3.5 h-3.5" /> Base: {formatCurrency(registration.basePrice)}</span>
                         {registration.soldPrice && (
                           <span className="text-green-600 font-medium">
                             Sold: {formatCurrency(registration.soldPrice)}
@@ -164,7 +166,9 @@ export default function PlayerDashboardPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🏏</div>
+              <div className="mb-4 flex justify-center">
+                <CricketIcon className="w-16 h-16 text-gray-300" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 No registrations yet
               </h3>
@@ -193,7 +197,7 @@ function StatCard({
 }: {
   title: string;
   value: number | string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   isText?: boolean;
 }) {
@@ -210,7 +214,7 @@ function StatCard({
             </p>
           </div>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${color}`}
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${color}`}
           >
             {icon}
           </div>
@@ -222,11 +226,11 @@ function StatCard({
 
 function RegistrationStatusBadge({ status }: { status: string }) {
   const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
-    pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: '⏳ Pending' },
-    approved: { bg: 'bg-blue-100', text: 'text-blue-700', label: '✓ Approved' },
-    rejected: { bg: 'bg-red-100', text: 'text-red-700', label: '✗ Rejected' },
-    sold: { bg: 'bg-green-100', text: 'text-green-700', label: '✅ Sold' },
-    unsold: { bg: 'bg-gray-100', text: 'text-gray-700', label: '○ Unsold' },
+    pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Pending' },
+    approved: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Approved' },
+    rejected: { bg: 'bg-red-100', text: 'text-red-700', label: 'Rejected' },
+    sold: { bg: 'bg-green-100', text: 'text-green-700', label: 'Sold' },
+    unsold: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Unsold' },
   };
 
   const config = statusConfig[status] || statusConfig.pending;
