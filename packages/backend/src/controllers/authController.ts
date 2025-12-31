@@ -309,6 +309,36 @@ export const changePassword = async (
 };
 
 /**
+ * Delete user account
+ * DELETE /api/auth/delete-account
+ */
+export const deleteAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const user = await User.findById(req.user?._id);
+
+    if (!user) {
+      throw new UnauthorizedError('User not found');
+    }
+
+    // Soft delete - mark as inactive instead of deleting
+    user.isActive = false;
+    user.refreshToken = undefined;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Account deleted successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Google OAuth callback handler
  */
 export const googleCallback = async (
@@ -350,5 +380,6 @@ export default {
   getProfile,
   updateProfile,
   changePassword,
+  deleteAccount,
   googleCallback,
 };

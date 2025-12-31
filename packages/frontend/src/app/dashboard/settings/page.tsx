@@ -1,13 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useAuthStore } from '@/store/auth-store';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/lib/api';
 import { 
   Sun, 
   Moon, 
@@ -16,12 +27,17 @@ import {
   Bell, 
   Shield, 
   Palette,
-  Check
+  Check,
+  Loader2,
+  AlertTriangle,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { user } = useAuthStore();
+  const { user, accessToken, logout } = useAuthStore();
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [notifications, setNotifications] = useState({
@@ -30,6 +46,24 @@ export default function SettingsPage() {
     auctionUpdates: true,
     bidAlerts: true,
   });
+
+  // Password change state
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  // Delete account state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  // 2FA state
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [twoFactorDialogOpen, setTwoFactorDialogOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -67,6 +101,98 @@ export default function SettingsPage() {
     toast({
       title: 'Notifications Updated',
       description: 'Your notification preferences have been saved.',
+    });
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        variant: 'destructive',
+        title: 'Password Mismatch',
+        description: 'New password and confirmation do not match.',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        variant: 'destructive',
+        title: 'Password Too Short',
+        description: 'Password must be at least 6 characters long.',
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      await api.changePassword(currentPassword, newPassword, accessToken!);
+      toast({
+        title: 'Password Changed',
+        description: 'Your password has been updated successfully.',
+      });
+      setPasswordDialogOpen(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Password Change Failed',
+        description: error.message || 'Failed to change password. Please check your current password.',
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== 'DELETE') {
+      toast({
+        variant: 'destructive',
+        title: 'Confirmation Required',
+        description: 'Please type DELETE to confirm account deletion.',
+      });
+      return;
+    }
+
+    setIsDeletingAccount(true);
+    try {
+      await api.deleteAccount(accessToken!);
+      toast({
+        title: 'Account Deleted',
+        description: 'Your account has been permanently deleted.',
+      });
+      logout();
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Deletion Failed',
+        description: error.message || 'Failed to delete account. Please try again.',
+      });
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
+
+  const handleToggle2FA = () => {
+    if (twoFactorEnabled) {
+      setTwoFactorEnabled(false);
+      toast({
+        title: '2FA Disabled',
+        description: 'Two-factor authentication has been disabled.',
+      });
+    } else {
+      setTwoFactorDialogOpen(true);
+    }
+  };
+
+  const handleEnable2FA = () => {
+    setTwoFactorEnabled(true);
+    setTwoFactorDialogOpen(false);
+    toast({
+      title: '2FA Enabled',
+      description: 'Two-factor authentication is now active on your account.',
     });
   };
 
@@ -257,6 +383,7 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Change Password */}
           <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
@@ -265,20 +392,147 @@ export default function SettingsPage() {
                   Update your password to keep your account secure
                 </p>
               </div>
-              <Button variant="outline">Change</Button>
+              <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Change</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Change Password</DialogTitle>
+                    <DialogDescription>
+                      Enter your current password and choose a new one.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="current-password">Current Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="current-password"
+                          type={showCurrentPassword ? 'text' : 'password'}
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          placeholder="Enter current password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        >
+                          {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-password">New Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="new-password"
+                          type={showNewPassword ? 'text' : 'password'}
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="Enter new password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        >
+                          {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password">Confirm New Password</Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm new password"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setPasswordDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleChangePassword}
+                      disabled={isChangingPassword || !currentPassword || !newPassword || !confirmPassword}
+                      className="gradient-cricket text-white"
+                    >
+                      {isChangingPassword ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Changing...
+                        </>
+                      ) : (
+                        'Change Password'
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
+
+          {/* Two-Factor Authentication */}
           <div className="p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">Two-Factor Authentication</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Add an extra layer of security to your account
+                  {twoFactorEnabled 
+                    ? '2FA is currently enabled on your account' 
+                    : 'Add an extra layer of security to your account'}
                 </p>
               </div>
-              <Button variant="outline">Enable</Button>
+              <Dialog open={twoFactorDialogOpen} onOpenChange={setTwoFactorDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" onClick={handleToggle2FA}>
+                    {twoFactorEnabled ? 'Disable' : 'Enable'}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Enable Two-Factor Authentication</DialogTitle>
+                    <DialogDescription>
+                      Scan the QR code with your authenticator app to enable 2FA.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4 space-y-4">
+                    <div className="flex justify-center">
+                      <div className="w-48 h-48 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <p className="text-sm text-gray-500 text-center px-4">
+                          QR Code would appear here in production
+                        </p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="2fa-code">Enter verification code</Label>
+                      <Input
+                        id="2fa-code"
+                        placeholder="000000"
+                        maxLength={6}
+                        className="text-center text-2xl tracking-widest"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setTwoFactorDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleEnable2FA} className="gradient-cricket text-white">
+                      Verify & Enable
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
+
+          {/* Delete Account */}
           <div className="p-4 rounded-lg border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-900/20">
             <div className="flex items-center justify-between">
               <div>
@@ -287,7 +541,60 @@ export default function SettingsPage() {
                   Permanently delete your account and all data
                 </p>
               </div>
-              <Button variant="destructive">Delete</Button>
+              <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">Delete</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-red-600">
+                      <AlertTriangle className="w-5 h-5" />
+                      Delete Account
+                    </DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4 space-y-4">
+                    <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                      <p className="text-sm text-red-700 dark:text-red-400">
+                        <strong>Warning:</strong> All your auction registrations, team ownerships, and bidding history will be permanently deleted.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="delete-confirm">
+                        Type <strong>DELETE</strong> to confirm
+                      </Label>
+                      <Input
+                        id="delete-confirm"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="DELETE"
+                        className="border-red-300 focus:border-red-500"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      variant="destructive"
+                      onClick={handleDeleteAccount}
+                      disabled={isDeletingAccount || deleteConfirmText !== 'DELETE'}
+                    >
+                      {isDeletingAccount ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Deleting...
+                        </>
+                      ) : (
+                        'Delete My Account'
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </CardContent>

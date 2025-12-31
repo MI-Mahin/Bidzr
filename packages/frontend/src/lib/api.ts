@@ -64,6 +64,21 @@ class ApiClient {
     });
   }
 
+  async changePassword(currentPassword: string, newPassword: string, token: string) {
+    return this.request('/auth/password', {
+      method: 'PUT',
+      body: JSON.stringify({ currentPassword, newPassword }),
+      token,
+    });
+  }
+
+  async deleteAccount(token: string) {
+    return this.request('/auth/delete-account', {
+      method: 'DELETE',
+      token,
+    });
+  }
+
   // Auction endpoints
   async getAuctions(token?: string, params?: { status?: string; page?: number; limit?: number }) {
     const query = new URLSearchParams();

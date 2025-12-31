@@ -45,13 +45,18 @@ export const useAuthStore = create<AuthState>()(
           refreshToken,
         }),
 
-      logout: () =>
+      logout: () => {
+        // Clear the persisted storage
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('bidzr-auth');
+        }
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
-        }),
+        });
+      },
 
       setLoading: (isLoading) => set({ isLoading }),
     }),

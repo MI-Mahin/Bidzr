@@ -56,6 +56,13 @@ router.put('/profile', authenticate, authController.updateProfile);
 router.put('/password', authenticate, authController.changePassword);
 
 /**
+ * @route   DELETE /api/auth/delete-account
+ * @desc    Delete user account
+ * @access  Private
+ */
+router.delete('/delete-account', authenticate, authController.deleteAccount);
+
+/**
  * @route   GET /api/auth/google
  * @desc    Initiate Google OAuth
  * @access  Public
