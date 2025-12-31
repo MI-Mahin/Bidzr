@@ -1,0 +1,26 @@
+{
+  "name": "bidzr",
+  "version": "1.0.0",
+  "description": "Sports Auction Management System - Starting with Cricket",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=@bidzr/backend",
+    "dev:frontend": "npm run dev --workspace=@bidzr/frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=@bidzr/backend",
+    "build:frontend": "npm run build --workspace=@bidzr/frontend",
+    "start:backend": "npm run start --workspace=@bidzr/backend",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
