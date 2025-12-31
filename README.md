@@ -2,7 +2,7 @@
 
 A comprehensive real-time sports auction management platform built with Next.js, Node.js, Express, MongoDB, and Socket.IO. Starting with Cricket, the platform is designed to support multiple sports.
 
-## 🏏 Features
+## Features
 
 ### User Roles
 - **Admin**: Create and manage auctions, control bidding flow, set rules
@@ -10,12 +10,12 @@ A comprehensive real-time sports auction management platform built with Next.js,
 - **Player**: Register for auctions, view status, track sold value
 
 ### Core Features
-- 🔴 **Real-time Bidding**: Live auction room with Socket.IO
-- ⏱️ **30-Second Timer**: Auto-countdown with reset on new bids
-- 💰 **Budget Management**: Track team budgets and spending
-- 🎯 **Role-based Access**: Secure authentication with JWT
-- 📊 **Live Stats**: Real-time auction analytics
-- 🔐 **Secure Auctions**: Password-protected auction rooms
+- **Real-time Bidding**: Live auction room with Socket.IO
+- **30-Second Timer**: Auto-countdown with reset on new bids
+- **Budget Management**: Track team budgets and spending
+- **Role-based Access**: Secure authentication with JWT
+- **Live Stats**: Real-time auction analytics
+- **Secure Auctions**: Password-protected auction rooms
 
 ### Tech Stack
 - **Frontend**: Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Radix UI
@@ -24,7 +24,7 @@ A comprehensive real-time sports auction management platform built with Next.js,
 - **Auth**: JWT with refresh tokens, Google OAuth (optional)
 - **State**: Zustand for client-side state management
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 bidzr/
@@ -53,7 +53,7 @@ bidzr/
 └── README.md
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -106,7 +106,7 @@ bidzr/
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000
 
-## 📖 API Endpoints
+## API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -145,7 +145,7 @@ bidzr/
 | POST | `/api/bids` | Place a bid |
 | GET | `/api/bids/player/:id` | Get bids for player |
 
-## 🔌 Socket.IO Events
+## Socket.IO Events
 
 ### Client → Server
 | Event | Payload | Description |
@@ -165,7 +165,7 @@ bidzr/
 | `player:unsold` | `{ player }` | Player unsold |
 | `auction:ended` | `{}` | Auction completed |
 
-## 🏗️ Building for Production
+## Building for Production
 
 ```bash
 # Build all packages
@@ -176,7 +176,7 @@ npm run build:backend
 npm run build:frontend
 ```
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ```bash
 # Build and run with Docker Compose
@@ -187,7 +187,7 @@ docker build -t bidzr-backend ./packages/backend
 docker build -t bidzr-frontend ./packages/frontend
 ```
 
-## 📝 Environment Variables
+## Environment Variables
 
 ### Backend
 | Variable | Description | Default |
@@ -206,7 +206,7 @@ docker build -t bidzr-frontend ./packages/frontend
 | `NEXT_PUBLIC_API_URL` | Backend API URL | http://localhost:5000/api |
 | `NEXT_PUBLIC_SOCKET_URL` | Socket.IO server URL | http://localhost:5000 |
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -214,15 +214,15 @@ docker build -t bidzr-frontend ./packages/frontend
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Cricket auction inspired by IPL auction format
-- Built with ❤️ for sports enthusiasts
+- Built with passion for sports enthusiasts
 
 ---
 
-**Bidzr** - Experience the thrill of live sports auctions! 🏏⚡
+**Bidzr** - Experience the thrill of live sports auctions!
